@@ -6,6 +6,7 @@ import android.widget.TextView
 import org.json.JSONObject
 import java.net.URL
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,11 +24,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun parserJson(json: String) {
-        val obj = JSONObject(json)
-        val obj2 = obj.optString("coord")
-        val obj3 = JSONObject(obj2)
-        xalabaia.text = obj3.optString("lat")
-        xalabaia2.text = obj.optString("weather")
+        coordinatesParser(json)
+        weatherParser(json)
 
     }
+
+    private fun weatherParser(json: String) {
+        val obj = JSONObject(json).optString("weather")
+        val array = JSONArray(obj)
+        val jsonObject = array.getJSONObject(0)
+        xalabaia3.text = jsonObject.optString("description")
+    }
+
+    private fun coordinatesParser(json: String) {
+        val obj = JSONObject(json).optString("coord")
+        val latitude = JSONObject(obj).optString("lat")
+        val longitude = JSONObject(obj).optString("lon")
+
+        xalabaia.text = latitude
+        xalabaia2.text = longitude
+    }
+
+
 }
