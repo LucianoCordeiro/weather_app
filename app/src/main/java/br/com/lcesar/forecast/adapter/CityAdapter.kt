@@ -1,31 +1,19 @@
 package br.com.lcesar.forecast.adapter
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import br.com.lcesar.forecast.R
 import br.com.lcesar.forecast.domain.City
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.adapter_city.view.*
 
-class CityAdapter (val cities: List<City>): RecyclerView.Adapter<CityAdapter.CitiesViewHolder>() {
+class CityAdapter (val cities: List<City>, val onClick: (City) -> Unit): RecyclerView.Adapter<CityAdapter.CitiesViewHolder>() {
 
-    class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var cName: TextView
-        var temp: TextView
-        var img: ImageView
-        var main: TextView
-        init {
-            temp = view.findViewById(R.id.temp)
-            cName = view.findViewById(R.id.cName)
-            img = view.findViewById(R.id.img)
-            main = view.findViewById(R.id.main)
-        }
-
-    }
+    class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun getItemCount(): Int = this.cities.size
 
@@ -36,10 +24,14 @@ class CityAdapter (val cities: List<City>): RecyclerView.Adapter<CityAdapter.Cit
 
     override fun onBindViewHolder(holder: CitiesViewHolder, position: Int) {
         val city = cities[position]
-        holder.cName.text = "${city.name}, Brazil"
-        holder.temp.text = "${(city.temp.toDouble() - 273.15).toInt()}°C"
-        holder.main.text = "|   ${city.main}"
-        Picasso.get().load(city.icon).into(holder.img)
+        val view = holder.itemView
+        view.cName.text = "${city.name}, Brazil"
+        view.temp.text = "${(city.temp.toDouble() - 273.15).toInt()}°C"
+        view.main.text = "|   ${city.main}"
+        Picasso.get().load(city.icon).into(view.img)
+        view.button.setTextColor(Color.parseColor("#ffffff"))
+        view.button.background.setColorFilter(Color.parseColor("#3F51B5"), PorterDuff.Mode.MULTIPLY)
+        view.button.setOnClickListener { onClick(city) }
     }
 
 }

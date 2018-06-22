@@ -1,17 +1,22 @@
 package br.com.lcesar.forecast.domain
 
-import br.com.lcesar.forecast.R.id.*
-import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONArray
 import org.json.JSONObject
+import java.io.Serializable
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
-class City {
+class City : Serializable {
     var id:Long = 0
     var name = ""
     var main = ""
     var description = ""
     var temp = ""
+    var pressure = ""
+    var humidity = ""
+    var speed = ""
+    var sunrise = ""
+    var sunset = ""
     var icon = ""
 
     companion object {
@@ -36,31 +41,36 @@ class City {
             val name = JSONObject(json).optString("name")
             val city = City()
             city.name = name
-            city.temp = temp(json)
-            city.main = main(json)
-            city.icon = "http://openweathermap.org/img/w/${icon(json)}.png"
+            with(city) {
+                temp = getData(json, "main", "temp")
+                humidity = getData(json, "main", "humidity")
+                pressure = getData(json, "main", "pressure")
+                speed = getData(json, "wind", "speed")
+                description = getWeatherData(json, "description")
+                main = getWeatherData(json, "main")
+                sunrise = dateParser(json, "sunrise")
+                sunset = dateParser(json, "sunset")
+                icon = "http://openweathermap.org/img/w/${getWeatherData(json, "icon")}.png"
+            }
             return city
         }
 
-        private fun temp(json: String): String {
-            val obj = JSONObject(json).optString("main")
-            return JSONObject(obj).optString("temp")
+        private fun getData(json: String, firstKeyword: String, lastKeyword: String): String {
+            val obj = JSONObject(json).optString(firstKeyword)
+            return JSONObject(obj).optString(lastKeyword)
         }
 
-        private fun main(json: String): String {
+        private fun getWeatherData(json: String, keyword: String): String {
             val obj = JSONObject(json)
             val array = obj.getJSONArray("weather")
-            return array.getJSONObject(0).optString("main")
+            return array.getJSONObject(0).optString(keyword)
         }
 
-        private fun icon(json: String): String {
-            val obj = JSONObject(json)
-            val array = obj.getJSONArray("weather")
-            return array.getJSONObject(0).optString("icon")
+        private fun dateParser(json: String, lastKeyword: String): String {
+            val time = getData(json, "sys", lastKeyword).toLong()
+            val date = Date((time * 1000) - 10800000)
+            return SimpleDateFormat("HH:mm").format(date)
         }
-
 
     }
-
-
 }
