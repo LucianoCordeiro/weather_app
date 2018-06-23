@@ -2,9 +2,11 @@ package br.com.lcesar.forecast
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import br.com.lcesar.forecast.domain.City
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_city.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 class CityActivity : AppCompatActivity() {
 
@@ -12,6 +14,8 @@ class CityActivity : AppCompatActivity() {
         lateinit var city: City
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_city)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         city = intent.getSerializableExtra("city") as City
 
         cName.text = "${city.name}, Brazil"
@@ -24,5 +28,13 @@ class CityActivity : AppCompatActivity() {
         sunrise.text = "Sunrise: ${city.sunrise}"
         sunset.text = "Sunset: ${city.sunset}"
         Picasso.get().load(city.icon).into(img)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if(item?.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
