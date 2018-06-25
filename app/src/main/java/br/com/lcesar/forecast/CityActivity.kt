@@ -4,8 +4,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import br.com.lcesar.forecast.domain.City
+import br.com.lcesar.forecast.fragments.MyMapFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_city.*
+import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 class CityActivity : AppCompatActivity() {
@@ -28,6 +30,13 @@ class CityActivity : AppCompatActivity() {
         sunrise.text = "Sunrise: ${city.sunrise}"
         sunset.text = "Sunset: ${city.sunset}"
         Picasso.get().load(city.icon).into(img)
+
+        val myMapFragment = MyMapFragment()
+        myMapFragment.arguments = intent.extras
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.mapFragment2, myMapFragment)
+                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

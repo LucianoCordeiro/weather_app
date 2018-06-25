@@ -17,6 +17,8 @@ class City : Serializable {
     var speed = ""
     var sunrise = ""
     var sunset = ""
+    var lat = ""
+    var lon = ""
     var icon = ""
 
     companion object {
@@ -26,8 +28,7 @@ class City : Serializable {
                     arrayOf("http://api.openweathermap.org/data/2.5/weather?q=Curitiba,br&appid=5c076a102a0cec6b20ac1c722cafc77b",
                         "http://api.openweathermap.org/data/2.5/weather?q=Florianopolis,br&appid=5c076a102a0cec6b20ac1c722cafc77b",
                         "http://api.openweathermap.org/data/2.5/weather?q=São Paulo,br&appid=5c076a102a0cec6b20ac1c722cafc77b",
-                            "http://api.openweathermap.org/data/2.5/weather?q=Porto Alegre,br,br&appid=5c076a102a0cec6b20ac1c722cafc77b",
-                            "http://api.openweathermap.org/data/2.5/weather?q=Belo Horizonte,br&appid=5c076a102a0cec6b20ac1c722cafc77b"
+                            "http://api.openweathermap.org/data/2.5/weather?q=Porto Alegre,br,br&appid=5c076a102a0cec6b20ac1c722cafc77b"
                     )
             for (url in urlArray) {
                 val json = URL(url).readText()
@@ -50,6 +51,8 @@ class City : Serializable {
                 main = getWeatherData(json, "main")
                 sunrise = dateParser(json, "sunrise")
                 sunset = dateParser(json, "sunset")
+                lat = getData(json, "coord", "lat")
+                lon = getData(json, "coord", "lon")
                 icon = "http://openweathermap.org/img/w/${getWeatherData(json, "icon")}.png"
             }
             return city
